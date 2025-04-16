@@ -5,7 +5,7 @@ const uuid = require('uuid/v4');
 const app = express();
 
 const DUMMY_PRODUCTS = []; // not a database, just some in-memory storage for now
-
+const DUMMY_ITEMS = [];
 app.use(bodyParser.json());
 
 // CORS Headers => Required for cross-origin/ cross-server communication
@@ -25,6 +25,35 @@ app.use((req, res, next) => {
 app.get('/products', (req, res, next) => {
   res.status(200).json({ products: DUMMY_PRODUCTS });
 });
+
+app.get('/items', (req, res, next) => {
+  res.status(200).json({ products: DUMMY_ITEMS });
+});
+
+app.post('/item', (req, res, next) => {
+  const { title, price } = req.body;
+
+  if (!title || title.trim().length === 0 || !price || price <= 0) {
+    return res.status(422).json({
+      message: 'Invalid input, please enter a valid title and price.'
+    });
+  }
+
+  const createdProduct = {
+    id: uuid(),
+    title,
+    price
+  };
+
+  ITEM_PRODUCTS.push(createdProduct);
+
+  res
+    .status(201)
+    .json({ message: 'Created new ITEM.', product: createdProduct });
+});
+app.get('/testing', (req, res, next) => {
+  res.status(200).json({ 'testing': '123' })
+})
 
 app.post('/product', (req, res, next) => {
   const { title, price } = req.body;
